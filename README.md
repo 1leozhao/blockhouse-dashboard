@@ -70,7 +70,7 @@ Clone the repository:
 
 ### Libraries & Tools
 - Backend:
---Django
+-- Django
 --Django REST Framework
 --django-cors-headers
 --psycopg2-binary
