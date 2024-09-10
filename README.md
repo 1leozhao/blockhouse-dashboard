@@ -1,6 +1,6 @@
 # Blockhouse Dashboard
 
-This project consists of a Django backend and a Next.js frontend for the Blockhouse Dashboard.
+This project consists of a Django backend and a Next.js frontend for the Blockhouse Dashboard. It's intended purpose is a Financial Dashboard web application.
 
 ## Setup and Running the Application
 
