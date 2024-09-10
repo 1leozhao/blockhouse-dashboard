@@ -69,19 +69,19 @@ Clone the repository:
 - Pie Chart Data: http://localhost:8000/api/pie-chart-data/
 
 ### Libraries & Tools
--Backend:
+- Backend:
 --Django
 --Django REST Framework
 --django-cors-headers
 --psycopg2-binary
 
--Frontend:
+- Frontend:
 --React
 --Next.js
 --Chart.js
 --react-chartjs-2
 
--Tools:
+- Tools:
 --pip
 --npm
 --Git
