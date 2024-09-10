@@ -26,7 +26,7 @@ Clone the repository:
 
 2. Install the required packages:
    ```
-   cd backend
+   cd blockhouse-dashboard\backend
    pip install Django djangorestframework django-cors-headers psycopg2-binary
    ```
 
