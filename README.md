@@ -63,7 +63,7 @@ Clone the repository:
 2. Access the specified port. [localhost:8000](http://localhost:8000/)
 
 ### API Endpoints
-- Candlestick Data: http://localhost:8080/api/candlestick-data/
-- Line Chart Data: http://localhost:8080/api/line-chart-data/
-- Bar Chart Data: http://localhost:8080/api/bar-chart-data/
-- Pie Chart Data: http://localhost:8080/api/pie-chart-data/
+- Candlestick Data: http://localhost:8000/api/candlestick-data/
+- Line Chart Data: http://localhost:8000/api/line-chart-data/
+- Bar Chart Data: http://localhost:8000/api/bar-chart-data/
+- Pie Chart Data: http://localhost:8000/api/pie-chart-data/
