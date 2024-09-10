@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .chart-container {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            height: 400px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .chart-container:hover {
+            transform: scale(1.02);
+        }
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 56px - 200px); /* Adjust for navbar and footer */
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .data-table {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Financial Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Settings</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container center-content">
+        <h1 class="mb-4">Financial Overview</h1>
+        <div class="row mb-3">
+            <div class="col-auto">
+                <select id="chartSelector" class="form-select" style="width: 200px;">
+                    <option value="">Select a chart type</option>
+                    <option value="candlestick">Candlestick Chart</option>
+                    <option value="line">Line Chart</option>
+                    <option value="bar">Bar Chart</option>
+                    <option value="pie">Pie Chart</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <div class="input-group">
+                    <span class="input-group-text">Date Range</span>
+                    <input type="date" id="startDate" class="form-control">
+                    <input type="date" id="endDate" class="form-control">
+                    <button class="btn btn-primary" id="updateChart">Update</button>
+                </div>
+            </div>
+        </div>
+        <div id="chartContainer" class="chart-container" style="display: none;">
+            <canvas id="chart"></canvas>
+        </div>
+        <div id="loading" class="loading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading chart data...</p>
+        </div>
+        <div id="errorMessage" class="error-message"></div>
+        <div id="dataTable" class="data-table"></div>
+    </div>
+
+    <footer class="bg-light text-center text-lg-start mt-4">
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Financial Dashboard</h5>
+                    <p>
+                        Providing insightful financial data visualization for informed decision-making.
+                    </p>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Links</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="#!" class="text-dark">About Us</a></li>
+                        <li><a href="#!" class="text-dark">Contact</a></li>
+                        <li><a href="#!" class="text-dark">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase mb-0">Follow Us</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#!" class="text-dark"><i class="bi bi-facebook"></i> Facebook</a></li>
+                        <li><a href="#!" class="text-dark"><i class="bi bi-twitter"></i> Twitter</a></li>
+                        <li><a href="#!" class="text-dark"><i class="bi bi-linkedin"></i> LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2024 Financial Dashboard. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        const chartSelector = document.getElementById('chartSelector');
+        const chartContainer = document.getElementById('chartContainer');
+        const loadingDiv = document.getElementById('loading');
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const updateButton = document.getElementById('updateChart');
+        const dataTableDiv = document.getElementById('dataTable');
+        let currentChart = null;
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('bg-dark');
+            document.body.classList.toggle('text-light');
+        });
+
+        // Set default date range (last 30 days)
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+        startDate.value = thirtyDaysAgo.toISOString().split('T')[0];
+        endDate.value = today.toISOString().split('T')[0];
+
+        chartSelector.addEventListener('change', async (event) => {
+            const selectedChart = event.target.value;
+            if (selectedChart) {
+                await fetchDataAndCreateChart(selectedChart);
+            } else {
+                hideChart();
+            }
+        });
+
+        updateButton.addEventListener('click', async () => {
+            const selectedChart = chartSelector.value;
+            if (selectedChart) {
+                await fetchDataAndCreateChart(selectedChart);
+            }
+        });
+
+        async function fetchDataAndCreateChart(chartType) {
+            showLoading();
+            hideError();
+
+            try {
+                const data = await fetchChartData(chartType);
+                createChart(chartType, data);
+                createDataTable(chartType, data);
+                showChart();
+            } catch (error) {
+                showError(error.message);
+                hideChart();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        async function fetchChartData(chartType) {
+            const startDateValue = startDate.value;
+            const endDateValue = endDate.value;
+            const response = await fetch(`/api/${chartType}-chart-data/?start=${startDateValue}&end=${endDateValue}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            return response.json();
+        }
+
+        function createChart(chartType, data) {
+            const ctx = document.getElementById('chart').getContext('2d');
+            
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            let chartConfig;
+
+            switch (chartType) {
+                case 'candlestick':
+                    chartConfig = {
+                        type: 'bar',
+                        data: {
+                            labels: data.data.map(d => d.x),
+                            datasets: [{
+                                label: 'Open',
+                                data: data.data.map(d => d.open),
+                                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                            },
+                            {
+                                label: 'Close',
+                                data: data.data.map(d => d.close),
+                                backgroundColor: 'rgba(153, 102, 255, 0.6)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Stock Price'
+                                }
+                            }
+                        }
+                    };
+                    break;
+                case 'line':
+                    chartConfig = {
+                        type: 'line',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Revenue',
+                                data: data.data,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Monthly Revenue'
+                                }
+                            }
+                        }
+                    };
+                    break;
+                case 'bar':
+                    chartConfig = {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Sales',
+                                data: data.data,
+                                backgroundColor: 'rgb(75, 192, 192)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Product Sales'
+                                }
+                            }
+                        }
+                    };
+                    break;
+                case 'pie':
+                    chartConfig = {
+                        type: 'pie',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                data: data.data,
+                                backgroundColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(255, 205, 86)'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Expense Distribution'
+                                }
+                            }
+                        }
+                    };
+                    break;
+            }
+
+            currentChart = new Chart(ctx, chartConfig);
+
+            // Add click event listener to the chart
+            document.getElementById('chart').onclick = function() {
+                window.location.href = `/api/${chartType}-chart-data/`;
+            };
+        }
+
+        function createDataTable(chartType, data) {
+            let tableHTML = '<table class="table table-sm"><thead><tr>';
+
+            // Create table headers
+            if (chartType === 'candlestick') {
+                tableHTML += '<th>Date</th><th>Open</th><th>High</th><th>Low</th><th>Close</th>';
+            } else {
+                tableHTML += '<th>Label</th><th>Value</th>';
+            }
+            tableHTML += '</tr></thead><tbody>';
+
+            // Create table rows
+            if (chartType === 'candlestick') {
+                data.data.forEach(item => {
+                    tableHTML += `<tr><td>${item.x}</td><td>${item.open}</td><td>${item.high}</td><td>${item.low}</td><td>${item.close}</td></tr>`;
+                });
+            } else {
+                data.labels.forEach((label, index) => {
+                    tableHTML += `<tr><td>${label}</td><td>${data.data[index]}</td></tr>`;
+                });
+            }
+
+            tableHTML += '</tbody></table>';
+            dataTableDiv.innerHTML = tableHTML;
+        }
+
+        function showLoading() {
+            loadingDiv.style.display = 'block';
+        }
+
+        function hideLoading() {
+            loadingDiv.style.display = 'none';
+        }
+
+        function showError(message) {
+            errorMessageDiv.textContent = `Error: ${message}`;
+            errorMessageDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            errorMessageDiv.style.display = 'none';
+        }
+
+        function showChart() {
+            chartContainer.style.display = 'block';
+        }
+
+        function hideChart() {
+            chartContainer.style.display = 'none';
+            dataTableDiv.innerHTML = '';
+            if (currentChart) {
+                currentChart.destroy();
+                currentChart = null;
+            }
+        }
+    </script>
+</body>
+</html>
