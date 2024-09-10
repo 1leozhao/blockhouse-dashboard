@@ -7,7 +7,8 @@ This project consists of a Django backend and a Next.js frontend for the Blockho
 Clone the repository:
    ```bash
    git clone https://github.com/1leozhao/blockhouse-dashboard.git
-   cd blockhouse-dashboard```
+   cd blockhouse-dashboard
+   ```bash
 
 ### Prerequisites
 
