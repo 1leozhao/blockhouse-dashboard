@@ -79,6 +79,7 @@ Clone the repository:
    - React
    - Next.js
    - Chart.js
+   - TypeScript
    - react-chartjs-2
 
 - Tools:
