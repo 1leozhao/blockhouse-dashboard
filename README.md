@@ -60,7 +60,7 @@ Clone the repository:
 ### Usage
 
 1. Ensure both backend and frontend services are running.
-2. Access the specified port. [8000](localhost:8000)
+2. Access the specified port. [localhost:8000](http://localhost:8000/)
 
 ### API Endpoints
 - Candlestick Data: http://localhost:8080/api/candlestick-data/
