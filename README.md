@@ -19,37 +19,44 @@ Clone the repository:
 ### Backend Setup
 
 1. Create and activate a virtual environment:
-   ```bash
+   ```
    python3 -m venv venv
    source venv/bin/activate
+   ```
 
 2. Install the required packages:
-   ```bash
+   ```
    cd backend
    pip install Django djangorestframework django-cors-headers psycopg2-binary
+   ```
 
 3. Run migrations:
-   ```bash
+   ```
    python manage.py migrate
+   ```
 
 4. Start the Django development server:
-   ```bash
+   ```
    python manage.py runserver
+   ```
 
 ### Frontend Setup
 
    1. Navigate to the frontend directory
-      ```bash
+      ```
       cd frontend
+      ```
 
    2. Install dependencies
-      ```bash
+      ```
       npm install
-
+      ```
+      
    3. Start the development server
-      ```bash
+      ```
       npm run dev
-
+      ```
+      
 ### Usage
 
 1. Ensure both backend and frontend services are running.
