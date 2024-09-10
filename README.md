@@ -70,22 +70,22 @@ Clone the repository:
 
 ### Libraries & Tools
 - Backend:
--- Django
---Django REST Framework
---django-cors-headers
---psycopg2-binary
+   - Django
+   - Django REST Framework
+   - django-cors-headers
+   - psycopg2-binary
 
 - Frontend:
---React
---Next.js
---Chart.js
---react-chartjs-2
+   - React
+   - Next.js
+   - Chart.js
+   - react-chartjs-2
 
 - Tools:
---pip
---npm
---Git
+   - pip
+   - npm
+   - Git
 
 ### Reflection
 
-The Blockhouse Dashboard project represents a significant integration of modern web technologies, combining a Django backend with a Next.js frontend to create a dynamic and responsive user interface. Throughout the development process, I gained valuable experience in setting up RESTful APIs, managing state in React, and implementing responsive design principles. This project not only enhanced my technical skills but also reinforced the importance of clear documentation and collaboration in software development.
+The Blockhouse Dashboard project represents a significant integration of modern web technologies, combining a Django backend with a Next.js frontend to create a dynamic and responsive user interface. Throughout the development process, I gained valuable experience in setting up RESTful APIs, managing state in React, and implementing responsive design principles.
