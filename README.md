@@ -68,6 +68,11 @@ Clone the repository:
 - Bar Chart Data: http://localhost:8000/api/bar-chart-data/
 - Pie Chart Data: http://localhost:8000/api/pie-chart-data/
 
+### Test Cases
+```
+python manage.py test chart_api
+```
+
 ### Libraries & Tools
 - Backend:
    - Django
